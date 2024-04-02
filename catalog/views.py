@@ -62,6 +62,6 @@ class TagDeleteView(generic.DeleteView):
 class TaskStatusView(generic.View):
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        task.is_completed = not task.is_completed
+        task.status = not task.status
         task.save()
         return redirect("catalog:index")

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mb-4">TODO List</h1>
+  <div class="ml">
+    <div class="mb-4">
+      <a href="{% url 'catalog:task-create' %}" class="btn btn-primary">
+        Add task
+      </a>
+    </div>
+    {% for task in tasks %}
+    <div class="task-container mb-4">
+      <div class="task-header">
+        <strong>{{ task.content }}</strong>
+        {% if task.status %}
+        <span class="text-success ml-2">Done</span>
+        {% else %}
+        <span class="text-danger ml-2">Not done</span>
+        {% endif %}
+        <form action="{% url 'catalog:task-status' pk=task.id %}" method="post" class="float-right">
+          {% csrf_token %}
+          {% if task.status %}
+          <button class="btn btn-secondary btn-sm ml-2 btn-custom" type="submit">Undo</button>
+          {% else %}
+          <button class="btn btn-success btn-sm ml-2 btn-custom" type="submit">Complete</button>
+          {% endif %}
+        </form>
+      </div>
+      <p class="mb-1"><strong>Created:</strong> {{ task.creation_date }} </p>
+      <div class="tags-actions">
+        <strong>Tags:</strong>
+        {% for tag in task.tags.all %}
+        <span>{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        <a href="{% url 'catalog:task-update' pk=task.id %}" class="ml-2">Update</a>
+        <a href="{% url 'catalog:task-delete' pk=task.id %}" class="ml-2">Delete</a>
+      </div>
+    </div>
+    <hr>
+    {% empty %}
+    <p>No TODO List!</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
